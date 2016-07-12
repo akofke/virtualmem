@@ -18,16 +18,18 @@
 #include <assert.h> 
 #include <string.h> 
 
+#include "LRU8BIT_OPTIMAL.h"
+
 
 int hasRef(int frameArray[], int frameCount, int ref){
-	printf("Looking for ref %i \n", ref);
+	//printf("Looking for ref %i \n", ref);
 	for (int zebra = 0; zebra <frameCount; zebra++){ //look to see if reference already in there
 		if (frameArray[zebra]==ref){
-			printf("Found ref %i in ref %i \n", ref, zebra);
+			//printf("Found ref %i in ref %i \n", ref, zebra);
 			return zebra+1;
 		}
 	}
-	printf("Did not find ref %i \n", ref);
+	//printf("Did not find ref %i \n", ref);
 	return 0;
 }
 
@@ -46,11 +48,11 @@ int LRU_8BIT(int refList[], int refCount, int frameCount){
 	
 	for (int i = 0; i<refCount; i++){ //go through all references one after the other
 		curRef=refList[i]; // track current reference
-		printf("Current Array:");
-		for (int printer = 0; printer<frameCount; printer++){ printf(" %i", frameArray[printer]); }
-		printf("\nCurrent Posit:");
-		for (int printer = 0; printer<frameCount; printer++){ printf(" %i", frameCounter[printer]); }
-		printf("\n");
+		//printf("Current Array:");
+		//for (int printer = 0; printer<frameCount; printer++){ //printf(" %i", frameArray[printer]); }
+		//printf("\nCurrent Posit:");
+		//for (int printer = 0; printer<frameCount; printer++){ //printf(" %i", frameCounter[printer]); }
+		//printf("\n");
 		int x = vPointer;
 		if (hasEmptyFrame){// fill initial frames
 			if(hasRef(frameArray, frameCount, curRef)==0){//if it's not there, replace empty frame with it.
@@ -123,11 +125,11 @@ int OPTIMAL (int refList[], int refCount, int frameCount){
 	
 	// Before all frames are full
 	for (int i = 0; i<refCount; i++){ //go through all references one after the other
-		printf("Current Array:");
-		for (int printer = 0; printer<frameCount; printer++){ printf(" %i", frameArray[printer]); }
-		printf("\nCurrent Posit:");
-		for (int printer = 0; printer<frameCount; printer++){ printf(" %i", frameNextRef[printer]); }
-		printf("\n");
+		//printf("Current Array:");
+		//for (int printer = 0; printer<frameCount; printer++){ //printf(" %i", frameArray[printer]); }
+		//printf("\nCurrent Posit:");
+		//for (int printer = 0; printer<frameCount; printer++){ //printf(" %i", frameNextRef[printer]); }
+		//printf("\n");
 		curRef=refList[i]; // track current reference
 		int x = vPointer;
 		int y;
@@ -164,16 +166,16 @@ int OPTIMAL (int refList[], int refCount, int frameCount){
 		// After all frames are full
 		else{
 			refHit=1;
-			printf("starting in state 1 \n");
+			//printf("starting in state 1 \n");
 			while (refHit!=0){ //for all frames in the table
 				if (refHit==1){
 					if (hasRef(frameArray, frameCount, curRef)!=0){
 						refHit=0;
-						printf("found ref, entering state 0 \n");
+						//printf("found ref, entering state 0 \n");
 					}
 					else { //if end is reached before frame is found, switch to state 2, and increment missCount
 						refHit=2;
-						printf("never found ref, entering state 2 \n");
+						//printf("never found ref, entering state 2 \n");
 						missCount++;
 					}
 				}
@@ -186,10 +188,10 @@ int OPTIMAL (int refList[], int refCount, int frameCount){
 							victimFrameNextRef = frameNextRef[z];
 						}
 					} //replace ref in victim frame with curRef
-					printf("selected ref %i in frame %i as victim \n", frameArray[victimFrame], victimFrame);
+					//printf("selected ref %i in frame %i as victim \n", frameArray[victimFrame], victimFrame);
 					frameArray[victimFrame] = curRef;
 					frameNextRef[victimFrame]=1; //reset victim frame counter
-					printf("replaced ref, entering state 0 \n");
+					//printf("replaced ref, entering state 0 \n");
 					refHit=0;
 				}
 				if (refHit==0){ //if stage 0 is entered, decrement the counters. if 0 after update, update nextRef for that frame
@@ -214,20 +216,3 @@ int OPTIMAL (int refList[], int refCount, int frameCount){
 	
 	return missCount;
 }
-
-int
-main(int argc,char *argv[])//for debug, remove if you see me
-{ 
-	int r[5];
-	int framenum = 3;
-	
-	r[0]=1;
-	r[1]=2;
-	r[2]=4;
-	r[3]=3;
-	r[4]=1;
-	
-	printf("LRU_8BIT: %i \nOPTIMAL: %i \n", LRU_8BIT(r, 5, 3), OPTIMAL(r, 5, 3));
-	return 0; 
-}
-

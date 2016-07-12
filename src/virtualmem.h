@@ -1,6 +1,7 @@
 #ifndef VIRTUALMEM_H
 #define VIRTUALMEM_H
 
+
 typedef enum {
     FIFO,
     LFU,

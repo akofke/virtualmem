@@ -6,11 +6,14 @@
 
 #include "virtualmem.h"
 
+#define DEFAULT_FRAMES 5
+#define DEFAULT_POLICY FIFO
+
 
 int main(int argc, char *argv[]) {
     
-    policy = FIFO;
-    frames = 10;
+    policy = DEFAULT_POLICY;
+    frames = DEFAULT_FRAMES;
     FILE *infile = stdin;
 
     int c;
@@ -54,6 +57,8 @@ int *read_file(FILE *fp) {
     size_t len = 0;
 
     getline(&line, &len, fp);
+
+
 }
 
 void usage(int is_err) {

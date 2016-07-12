@@ -18,7 +18,6 @@
 #include <assert.h> 
 #include <string.h> 
 
-#include "LRU8BIT_OPTIMAL.h"
 #include "virtualmem.h"
 
 

@@ -18,7 +18,6 @@
 #include <assert.h> 
 #include <string.h> 
 
-#include "FIFO_LFU.h"
 #include "virtualmem.h"
 
 

@@ -4,14 +4,19 @@
 #include <string.h>
 #include <limits.h>
 #include <assert.h>
+#include <time.h>
 
 #include "virtualmem.h"
+#include "algos.h"
 
 #define DEFAULT_FRAMES 5
 #define DEFAULT_POLICY P_FIFO
 
+#define TIME(alg) start=clock();pfs=alg;stop=clock()
+
 void usage(int is_err);
 int *read_file(FILE *fp, int *numrefs);
+void time_algo(replacement_policy policy, int *refs, int numrefs, int frames, double *time, int *pagefaults);
 
 int main(int argc, char *argv[]) {
     
@@ -55,11 +60,79 @@ int main(int argc, char *argv[]) {
 
     int numrefs = 0;
     int *refs = read_file(infile, &numrefs);
-    int i;
-    for(i = 0; i < numrefs; i++) {
-        printf("%d\n", refs[i]);
+    /* int i; */
+    /* for(i = 0; i < numrefs; i++) { */
+    /*     printf("%d\n", refs[i]); */
+    /* } */
+
+    // chosen policy and optimal algo time and pagefaults
+    double poltime, opttime;
+    int polpfs, optpfs;
+
+    time_algo(policy, refs, numrefs, frames, &poltime, &polpfs);
+    time_algo(P_OPTIMAL, refs, numrefs, frames, &opttime, &optpfs);
+    printf("%d %d\n", polpfs, optpfs);
+
+    const char *format =
+        "Number of page replacements with %1$s: %2$d\n"
+        "Number of page replacements with Optimal: %3$d\n"
+        "Percent page replacement penalty using %1$s: %4$f%%\n\n"
+        "Total time to run %1$s: %5$f msec\n"
+        "Total time to run Optimal algorithm: %6$f msec\n"
+        "%1$s is %7$f%% faster than Optimal algorithm.\n";
+
+    printf(
+            format,
+            pol_name(policy),
+            polpfs,
+            optpfs,
+            (double)(polpfs - optpfs) / (double)(polpfs) * 100.0,
+            poltime,
+            opttime,
+            (opttime - poltime) / (opttime) * 100.0
+          );
+
+    
+
+
+
+
+}
+
+void time_algo(replacement_policy policy, int *refs, int numrefs, int frames, double *time, int *pagefaults) {
+    clock_t start, stop;
+
+    /*
+     * faster than writing to a potentially distant memory address inside the timer
+     */
+    int pfs;
+
+    switch(policy) {
+        case P_FIFO:
+            TIME(FIFO(refs, numrefs, frames));
+            break;
+        case P_LFU:
+            TIME(LFU(refs, numrefs, frames));
+            break;
+        case P_LRU_STACK:
+            TIME(lruStack(frames, numrefs, refs));
+            break;
+        case P_LRU_CLOCK:
+            TIME(lruClock(frames, numrefs, refs));
+            break;
+        case P_LRU_REF8:
+            TIME(LRU_8BIT(refs, numrefs, frames));
+            break;
+        case P_OPTIMAL:
+            TIME(OPTIMAL(refs, numrefs, frames));
+            break;
+        default:
+            abort();
+
     }
 
+    *time = ((double)(stop-start) * 1000.0) / CLOCKS_PER_SEC;
+    *pagefaults = pfs;
 }
 
 int *read_file(FILE *fp, int *num_read) {

@@ -4,7 +4,7 @@
 
 
 
-void lruClock(int framenum, int pagenum,  int pages[]){
+int lruClock(int framenum, int pagenum,  int pages[]){
     int rep=0;bool acq=false; int vic=0;
     int frames[framenum];
     bool seccha[framenum];

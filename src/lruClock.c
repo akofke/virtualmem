@@ -33,4 +33,5 @@ void lruClock(int framenum, int pagenum,  int pages[]){
         }
     acq=false;
     }
+    return rep;
 }

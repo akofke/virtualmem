@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-void lruStack(int framenum, int pagenum, int pages[]){
+int lruStack(int framenum, int pagenum, int pages[]){
     bool there=false;				//set up for nested loop
     int rep=0;int index=0; 			//record replacements for output
     int frames[framenum];	 		//create the frames
@@ -29,4 +29,5 @@ void lruStack(int framenum, int pagenum, int pages[]){
         there=false;
     
     }
+    return rep;
 }

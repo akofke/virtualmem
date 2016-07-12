@@ -10,7 +10,7 @@
 int main(int argc, char *argv[]) {
     
     policy = FIFO;
-    frames = 10;
+    frames = 5;
     FILE *infile = stdin;
 
     int c;

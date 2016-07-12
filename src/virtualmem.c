@@ -71,7 +71,6 @@ int main(int argc, char *argv[]) {
 
     time_algo(policy, refs, numrefs, frames, &poltime, &polpfs);
     time_algo(P_OPTIMAL, refs, numrefs, frames, &opttime, &optpfs);
-    printf("%d %d\n", polpfs, optpfs);
 
     const char *format =
         "Number of page replacements with %1$s: %2$d\n"
